@@ -10,9 +10,18 @@ typedef struct{
 	
 }Articulo;
 
-Articulo invent[10];
+Articulo invent[10],invent2[10];
 
 int t =10;
+
+void copy(Articulo *dest, Articulo *dir){
+	strcpy(dest->des,dir->des);
+	strcpy(dest->fecreg,dir->fecreg);
+	dest->cod = dir->cod;
+	dest->codpro = dir->codpro;
+	dest->exi = dir->exi;
+	dest->reg = dir->reg;
+}
 
 /*
 1 agregar  - si codigo es unico
@@ -49,29 +58,253 @@ void save(){
 }
 
 
-void agregar(){
-	for(int x=0; x)
+
+int agregar(){
+	puts("AGREGAR");
+	for(int x=0; x<t;x++){
+		if(!invent[x].reg){
+			int valid;
+			do{
+				int cod;
+				printf("codigo: ");
+				scanInt(&cod);
+				for(int z=0; z<t;z++){
+					if(cod==invent[z].cod){
+						puts("El codigo no es valido");
+						getch();
+						system("cls");
+						valid = 0;
+						break;
+					}	
+				}
+				if(valid != 0){
+					invent[x].cod=cod;
+					valid =1;
+				}	
+			}while(!valid);
+		printf("Descripcion: ");
+		scanAlpha(invent[x].des,24);
+		printf("Fecha de registro: ");
+		scanAlpha(invent[x].fecreg,10);
+		printf("Existencia: ");
+		scanInt(&invent[x].exi);
+		printf("Codigo de proveedor: ");
+		scanInt(&invent[x].codpro);
+		invent[x].reg=true;
+		save();
+		return 1;
+		}
+	}
+	puts("No hay registros disponibles");
+	getch();
+	return 0;
 }
 
+int del(){
+	int cod;
+	puts("ELIMINAR");
+	printf("Ingresa un codigo para eliminar: ");
+	scanInt(&cod);
+	system("cls");
+	for(int x =0 ; x<t ; x++){
+		if(invent[x].cod == cod and invent[x].exi==0){
+			for(int z=x; z<t;z++){
+					copy(&invent[z],&invent[z+1]);
+				}
+				save();
+				return 1;
+		}
+	}
+	puts("No se encontro un registro");
+	getch();
+	return 0;
+	
+}
+
+int especifico(){
+	int cod;
+	puts("ESPECIFICO");
+	printf("Ingresa un codigo para consultar: ");
+	scanInt(&cod);
+	system("cls");
+	for(int x =0 ; x<t ; x++){
+		if(invent[x].cod == cod){
+			printf("codigo: %d\n",invent[x].cod);
+			printf("descripcion: %s\n",invent[x].des);
+			printf("fecha de registro: %s\n",invent[x].fecreg);
+			printf("codigo de proveedor: %d\n",invent[x].codpro);
+			printf("existencia: %d\n",invent[x].exi);
+			getch();
+			return 1;
+		}
+	}
+	puts("No se encontro un registro");
+	getch();
+	return 0;
+		
+}
+
+void general(Articulo *invent){
+	printf("codigo\tdescripcion\tfecha de registro\tproveedor\texistencia");
+	puts("\n-------------------------------------------------------------------------------");
+	
+	for(int x=0;x<t;x++){
+		if(invent[x].reg or invent[x].reg!=NULL){
+			printf("%d\t",invent[x].cod);
+			printf("%s\t\t",invent[x].des);
+			printf("%s\t\t",invent[x].fecreg);
+			printf("%d\t\t\t",invent[x].codpro);
+			printf("%d\t\t",invent[x].exi);
+			puts("\n----------------------------------------------------------------------");
+		}
+	}
+	getch();
+}
+
+int proveedor(){
+	int cod;
+	puts("ESPECIFICO");
+	printf("Ingresa un codigo de proveedor para consultar: ");
+	scanInt(&cod);
+	system("cls");
+	for(int x =0 ; x<t ; x++){
+		if(invent[x].cod == cod){
+			printf("codigo: %d\n",invent[x].codpro);
+			printf("descripcion: %s\n",invent[x].des);
+			printf("fecha de registro: %s\n",invent[x].fecreg);
+			printf("codigo de proveedor: %d\n",invent[x].codpro);
+			printf("existencia: %d\n",invent[x].exi);
+			getch();
+			return 1;
+		}
+	}
+	puts("No se encontro un registro");
+	getch();
+	return 0;
+}
+
+int consultar(){
+	int op;
+	while(1){
+		system("cls");
+		puts("1)Especifico");
+		puts("2)General");
+		puts("3)Proveedor");
+		puts("4)Regresar");
+		printf("Ingrese una opcion: ");
+		scanInt(&op);
+		system("cls");
+		switch(op){
+			case 1:{
+				especifico();
+				break;
+			}
+			case 2:{
+				general(invent);
+				break;
+			}
+			case 3:{
+				proveedor();
+				break;
+			}
+			case 4:{
+				return 0;
+				break;
+			}
+		}
+		
+	}
+}
+
+
+void xfecha(){
+	for(int x=0; x<t; x++){
+		for(int z=x;z<t && invent2[z].reg;z++){
+			if(strmp(invent2[x].fecreg,invent2[z].fecreg)==0){
+				Articulo aux;
+				copy(&aux,&invent2[x]);
+				copy(&invent2[x],&invent2[z]);
+				copy(&invent2[z],&aux);
+			}
+		}
+	}
+}
+
+void xCodigo(){
+	for(int x=0; x<t; x++){
+		for(int z=x;z<t && invent2[z].reg;z++){
+			if(invent2[x].cod>invent2[z].cod){
+				Articulo aux;
+				copy(&aux,&invent2[x]);
+				copy(&invent2[x],&invent2[z]);
+				copy(&invent2[z],&aux);
+			}
+		}
+	}
+}
+
+int ordenar(){
+	int op;
+	for(int x=0; x<t ; x++)
+		copy(&invent2[x],&invent2[x]);
+	while(1){
+		system("cls");
+		puts("1)Por codigo");
+		puts("2)Por fecha de registro");
+		puts("3)Regresar");
+		printf("Ingrese una opcion: ");
+		scanInt(&op);
+		system("cls");
+		switch(op){
+			case 1:{
+				xFecha();
+				break;
+			}
+			case 2:{
+				xCodigo();
+				break;
+			}
+			case 3:{
+				return 0;
+				break;
+			}
+		}
+		general(invent2);
+		
+	}
+}
 
 int mainMenu(){
 	while(1){
 		int op;
 		system("cls");
 		puts("1)Agregar");
-		puts("1)Eliminar");
-		puts("1)Consultar");
-		puts("1)Ordenar");
-		puts("1)Salir");
+		puts("2)Eliminar");
+		puts("3)Consultar");
+		puts("4)Ordenar");
+		puts("5)Salir");
 		puts("---------------------------------------");
 		printf("Ingrese una opcion: ");
 		scanInt(&op);
 		system("cls");
 		switch(op){
 			case 1:{
-				
+				agregar();
 				break;
 			}
+			case 2: {
+				del();
+				break;
+			}
+			case 3: {
+				consultar();
+				break;
+			}
+			case 4:{
+				ordenar();
+				break;
+			}
+			
 		}
 	}
 	
