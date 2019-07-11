@@ -6,7 +6,7 @@ typedef struct{
 	char fecreg[11];//fecha de regitro
 	int exi;//existencia del art
 	int codpro; //codigo de proveedor
-	bool reg;
+	bool reg=false;
 	
 }Articulo;
 
@@ -64,29 +64,27 @@ int agregar(){
 	for(int x=0; x<t;x++){
 		if(!invent[x].reg){
 			int valid;
+			int cod;
+			int cont=0;
 			do{
-				int cod;
 				printf("codigo: ");
 				scanInt(&cod);
-				for(int z=0; z<t;z++){
+				for(int z=0; z<t;z++,cont++){
 					if(cod==invent[z].cod){
 						puts("El codigo no es valido");
 						getch();
 						system("cls");
-						valid = 0;
 						break;
-					}	
-				}
-				if(valid != 0){
-					invent[x].cod=cod;
-					valid =1;
-				}	
-			}while(!valid);
+					}
+					
+				}		
+			}while(cont<10);
+		invent[x].cod=cod;
 		printf("Descripcion: ");
 		scanAlpha(invent[x].des,24);
 		printf("Fecha de registro: ");
-		scanAlpha(invent[x].fecreg,10);
-		printf("Existencia: ");
+		valifec(invent[x].fecreg);
+		printf("\nExistencia: ");
 		scanInt(&invent[x].exi);
 		printf("Codigo de proveedor: ");
 		scanInt(&invent[x].codpro);
@@ -102,18 +100,32 @@ int agregar(){
 
 int del(){
 	int cod;
+	char op;
 	puts("ELIMINAR");
 	printf("Ingresa un codigo para eliminar: ");
 	scanInt(&cod);
 	system("cls");
 	for(int x =0 ; x<t ; x++){
 		if(invent[x].cod == cod and invent[x].exi==0){
-			for(int z=x; z<t;z++){
+			printf("codigo: %d\n",invent[x].codpro);
+			printf("descripcion: %s\n",invent[x].des);
+			printf("fecha de registro: %s\n",invent[x].fecreg);
+			printf("codigo de proveedor: %d\n",invent[x].codpro);
+			printf("existencia: %d\n",invent[x].exi);
+			puts("------------------------------------------");
+			printf("Desea eliminar(y): ");
+			op=getch();
+			if(tolower(op)=='y'){
+				for(int z=x; z<t;z++){
 					copy(&invent[z],&invent[z+1]);
 				}
 				save();
 				return 1;
+			}else{
+					return 0;
+				}
 		}
+			
 	}
 	puts("No se encontro un registro");
 	getch();
@@ -149,7 +161,7 @@ void general(Articulo *invent){
 	puts("\n-------------------------------------------------------------------------------");
 	
 	for(int x=0;x<t;x++){
-		if(invent[x].reg or invent[x].reg!=NULL){
+		if(invent[x].reg==true or invent[x].reg!=NULL){
 			printf("%d\t",invent[x].cod);
 			printf("%s\t\t",invent[x].des);
 			printf("%s\t\t",invent[x].fecreg);
@@ -168,17 +180,16 @@ int proveedor(){
 	scanInt(&cod);
 	system("cls");
 	for(int x =0 ; x<t ; x++){
-		if(invent[x].cod == cod){
+		if(invent[x].codpro == cod){
 			printf("codigo: %d\n",invent[x].codpro);
 			printf("descripcion: %s\n",invent[x].des);
 			printf("fecha de registro: %s\n",invent[x].fecreg);
 			printf("codigo de proveedor: %d\n",invent[x].codpro);
 			printf("existencia: %d\n",invent[x].exi);
-			getch();
-			return 1;
+			puts("---------------------------------------------");
 		}
+		
 	}
-	puts("No se encontro un registro");
 	getch();
 	return 0;
 }
@@ -220,7 +231,7 @@ int consultar(){
 void xfecha(){
 	for(int x=0; x<t; x++){
 		for(int z=x;z<t && invent2[z].reg;z++){
-			if(strmp(invent2[x].fecreg,invent2[z].fecreg)==0){
+			if(strcmp(invent2[x].fecreg,invent2[z].fecreg)>0){
 				Articulo aux;
 				copy(&aux,&invent2[x]);
 				copy(&invent2[x],&invent2[z]);
@@ -246,7 +257,7 @@ void xCodigo(){
 int ordenar(){
 	int op;
 	for(int x=0; x<t ; x++)
-		copy(&invent2[x],&invent2[x]);
+		copy(&invent2[x],&invent[x]);
 	while(1){
 		system("cls");
 		puts("1)Por codigo");
@@ -257,11 +268,11 @@ int ordenar(){
 		system("cls");
 		switch(op){
 			case 1:{
-				xFecha();
+				xCodigo();
 				break;
 			}
 			case 2:{
-				xCodigo();
+				xfecha();
 				break;
 			}
 			case 3:{
@@ -302,6 +313,10 @@ int mainMenu(){
 			}
 			case 4:{
 				ordenar();
+				break;
+			}
+			case 5: {
+				return 0;
 				break;
 			}
 			

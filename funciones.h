@@ -26,7 +26,7 @@ void scanRange(char *cad, int t, Range range){
 			x--;
 			printf("\b \b");
 			*(cad + x)=' ';
-		}else if(aux==13){
+		}else if(aux==13 and x>0){
 			*(cad + x)='\0';
 			printf("\n");
 			break;	
@@ -49,7 +49,7 @@ void scanInt(int *retVal){
 			x--;
 			printf("\b \b");
 			num[x]=' ';
-		}else if(c==13) {
+		}else if(c==13 and x>0) {
 			//num[x]='\0';
 			*retVal = atoi(num);
 			printf("\n");
@@ -73,7 +73,7 @@ void scanAlpha(char *cad,int t){
 			x--;
 			printf("\b \b");
 			*(cad + x)=' ';
-		}else if(c==13){
+		}else if(c==13 and x>0){
 			*(cad + x)='\0';
 			printf("\n");
 			break;		
