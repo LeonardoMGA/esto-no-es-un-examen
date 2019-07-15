@@ -186,7 +186,7 @@ int proveedor(){
 	system("cls");
 	for(int x =0 ; x<t ; x++){
 		if(invent[x].codpro == cod){
-			printf("codigo: %d\n",invent[x].codpro);
+			printf("codigo: %d\n",invent[x].cod);
 			printf("descripcion: %s\n",invent[x].des);
 			printf("fecha de registro: %s\n",invent[x].fecreg);
 			printf("codigo de proveedor: %d\n",invent[x].codpro);
