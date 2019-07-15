@@ -6,7 +6,7 @@ typedef struct{
 	char fecreg[11];//fecha de regitro
 	int exi;//existencia del art
 	int codpro; //codigo de proveedor
-	bool reg=false;
+	bool reg;
 	
 }Articulo;
 
@@ -51,8 +51,13 @@ int init(){
 }
 
 void save(){
+	
 	if((arc=fopen("C:\\archivos\\tienda.txt","w+"))!=NULL){
-		fwrite(&invent,sizeof(Articulo),10,arc);
+		for(int x=0;x<t;x++){
+			if(invent[x].reg){
+				fwrite(&invent[x],sizeof(Articulo),1,arc);
+			}	
+		}	
 		fclose(arc);
 	}
 }
@@ -85,7 +90,7 @@ int agregar(){
 		printf("Fecha de registro: ");
 		valifec(invent[x].fecreg);
 		printf("\nExistencia: ");
-		scanInt(&invent[x].exi);
+		scanInt2(&invent[x].exi);
 		printf("Codigo de proveedor: ");
 		scanInt(&invent[x].codpro);
 		invent[x].reg=true;

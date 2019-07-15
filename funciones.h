@@ -59,6 +59,31 @@ void scanInt(int *retVal){
 	}
 }
 
+void scanInt2(int *retVal){
+	int t=9;
+	char num[t];
+	int x=0;
+	while(1){
+		char c =getch();
+		if(c>='0' && c<='9' && x<t){
+			printf("%c",c);
+			num[x]=c;
+			x++;
+		}else if(c==8 && x>0){
+			x--;
+			printf("\b \b");
+			num[x]=' ';
+		}else if(c==13) {
+			//num[x]='\0';
+			*retVal = atoi(num);
+			printf("\n");
+			break;	
+		}
+		
+	}
+}
+
+
 
 void scanAlpha(char *cad,int t){
 	
